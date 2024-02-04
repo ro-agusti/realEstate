@@ -1,10 +1,14 @@
 import express from 'express';
-import { formLogin, formSignin } from '../controllers/userControllers.js';
+import { formLogin, formSignup, register, formForfottenPassword } from '../controllers/userControllers.js';
 
 const router = express.Router();
 
 router.get('/login', formLogin);
-router.get('/signin', formSignin);
+
+router.get('/signup', formSignup);
+router.post('/signup', register);
+
+router.get('/forgotten-password', formForfottenPassword);
 
 //router.route('/')
   //  .get(function(req,res){

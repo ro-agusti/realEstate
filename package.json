@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "server": "nodemon index.js",
-    "css" : "postcss public/css/tailwind.css -o public/css/app.css --watch"
+    "css": "postcss public/css/tailwind.css -o public/css/app.css --watch"
   },
   "keywords": [
     "MVC",
@@ -18,8 +18,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.1",
     "express": "^4.18.2",
-    "pug": "^3.0.2"
+    "express-validator": "^7.0.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.9.1",
+    "pug": "^3.0.2",
+    "sequelize": "^6.35.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.17",
