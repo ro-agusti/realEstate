@@ -20,11 +20,16 @@ const User =db.define('users', {
 },{
     //encriptar passwords
     hooks: { 
-            beforeCreate: async function(usuario){
+            beforeCreate: async function(user){
                 const salt = await bcrypt.genSalt(10)
-                usuario.password = await bcrypt.hash( usuario.password, salt );
+                user.password = await bcrypt.hash( user.password, salt );
             }
     }
 })
+
+// customs methods
+User.prototype.checkPassword = function(password) {
+    return bcrypt.compareSync(password, this.password);
+}
 
 export default User;

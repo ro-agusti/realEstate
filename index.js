@@ -1,5 +1,7 @@
 //const express = require('express'); -->CommonJS
 import express from 'express'; // --> modificar el package.json --> "type" : "module",
+import csrf from 'csurf';
+import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes.js';
 import db from './config/db.js';
 
@@ -8,6 +10,12 @@ const app = express();
 
 //habilitar lectura de datos de formulario
 app.use(express.urlencoded({extended:true}))
+
+//habilitar cookie-parser
+app.use( cookieParser() );
+
+//habilitar CSRF
+app.use( csrf({cookie:true}));
 
 //conection to database
 try{
@@ -32,7 +40,7 @@ app.use( express.static('public'))
 app.use('/auth', userRoutes);
 
 //Definir un puerto
-const port = 3000;
+const port = process.env.PORT || 3000;
 app.listen(port, ()=> [
     console.log(`Server is working in port number ${port}`)
 ]);
