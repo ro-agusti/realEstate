@@ -1,7 +1,7 @@
 import { check, validationResult } from 'express-validator'
 import bcrypt from 'bcrypt'
 import User from '../models/User.js'
-import { generateID } from  '../helpers/tokens.js'
+import { generateJWT, generateID } from  '../helpers/tokens.js'
 import { emailRegister, emailForgottenPassword } from '../helpers/emails.js'
 //import { Result } from 'postcss'
 
@@ -58,8 +58,19 @@ const authenticate = async(req,res) => {
     })  
   }
 
-  //authenticate user
+  //authenticate user (JWT)
+  const token = generateJWT({
+    id: user.id,
+    name: user.name
+  });
+  console.log(token);
   
+  //store in cookies
+  return res.cookie('_token', token, {
+    httpOnly: true,
+    //secure: true,
+    //sameSite: true
+  }).redirect('/my-properties')
 
 }
 
