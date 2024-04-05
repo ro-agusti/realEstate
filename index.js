@@ -6,6 +6,7 @@ import userRoutes from './routes/userRoutes.js';
 import propertiesRoutes from './routes/propertiesRoutes.js';
 import db from './config/db.js';
 
+
 //crear la app
 const app = express();
 

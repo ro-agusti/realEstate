@@ -42,7 +42,8 @@ const Property = db.define('properties', {
     },
     images: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        defaultValue:null
     },
     published: {
         type: DataTypes.BOOLEAN,
