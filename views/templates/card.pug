@@ -1,0 +1,11 @@
+div(class="bg-white shadow rouded-lg")
+    img(class="object-cover h-72 w-full" src=`/uploads/${property.images}` alt=`House image of ${property.title}`)
+    div(class="p-5 space-y-2")
+        h3(class="text-1xl font-bold uppercase")= property.title 
+        p(class="text-sm text-gray-600") Rooms:  
+            span(class="text-gray-800 font-bold")= property.rooms 
+        p(class="text-sm text-gray-600") Toilets: 
+            span(class="text-gray-800 font-bold")= property.toilets 
+        p(class="text-sm text-gray-600") Price:  
+            span(class="text-gray-800 font-bold")= property.price.name 
+        a(href=`/property/${property.id}` class="bg-red-700 w-full text-center block font-bold text-white p-2 uppercase rounded") view property

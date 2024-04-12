@@ -1,0 +1,36 @@
+extends ../layout/admin
+
+block content
+
+    //-h1.text-4xl.my-5.font-extrabold.text-center REAL
+         spam.font-light ESTATE
+      h2.text-center.text-2xl.font-bold= page
+
+    h2(class="text-2-xl text-center my-10 font-extrabold text-gray-700 uppercase")= page
+
+    a(href="/my-properties" class="rounded-md my-4 py-2 px-10 mx-3 bg-red-700 text-gray-100 text-sm font-bold text-center uppercase cursor-pointer hover:bg-gray-300 hover:text-red-700 inline-block w-full sm:w-auto") Return to My Properties
+
+    //-pre= JSON.stringify(messages, undefined,2)
+
+
+    div(class="mx-auto max-w-4xl bg-white shadow")
+
+        if messages.length
+            
+            ul 
+                each message in messages 
+                    li(class=" border-gray 200 border-b p-5")
+                        p(class="font-bold text-gray-800") Name: 
+                            span(class="font-normal")= message.user.name
+
+                        p(class="font-bold text-gray-800") Email: 
+                            span(class="font-normal")= message.user.email
+
+                        p(class="font-bold text-gray-800") Message: 
+                            span(class="font-normal")= message.message
+
+                        p(class="font-bold text-gray-800") Sent: 
+                            span(class="font-normal")= formatDate( message.createdAt)
+            
+        else 
+            p(class="text-center text-gray-600 uppercase p-5") No messages

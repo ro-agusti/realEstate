@@ -2,8 +2,9 @@ extends ../layout/index
 
 block content
    div.py-10 
-      h1.text-4xl.my-5.font-extrabold.text-center REAL
-         spam.font-light ESTATE
+      a(href="/")
+         h1.text-4xl.my-5.font-extrabold.text-center REAL
+            spam.font-light ESTATE
       h2.text-center.text-2xl.font-bold= page 
       
       if errors 
@@ -24,4 +25,4 @@ block content
                div.flex.items-center.justify-between
                   a(class= "text-gray-400 text-xs hover:underline underline-offset-6" href="/auth/signup") Don't you have an account? Sign up
                   a(class= "text-gray-400 text-xs hover:underline underline-offset-6" href="/auth/forgotten-password") I forgot my password
-               input(class="w-full bg-gray-600 text-gray-300 rounded-md py-2 cursor-pointer hover:bg-gray-300 hover:text-gray-600" type='submit' value='LogIn')
+               input(class="w-full bg-red-800 text-gray-300 rounded-md py-2 cursor-pointer hover:bg-gray-300 hover:text-red-800" type='submit' value='LogIn')

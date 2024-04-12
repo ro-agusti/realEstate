@@ -4,6 +4,8 @@ import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes.js';
 import propertiesRoutes from './routes/propertiesRoutes.js';
+import appRoutes from './routes/appRoutes.js';
+import apiRoutes from './routes/apiRoutes.js'
 import db from './config/db.js';
 
 
@@ -39,8 +41,15 @@ app.set('views', './views')
 app.use( express.static('public'))
 
 //routing
+app.use('/', appRoutes);
 app.use('/auth', userRoutes);
 app.use('/', propertiesRoutes);
+app.use('/api', apiRoutes)
+
+//validate 
+app.use('*', (req, res) => {
+    res.redirect('/404')
+} )
 
 //Definir un puerto
 const port = process.env.PORT || 3000;

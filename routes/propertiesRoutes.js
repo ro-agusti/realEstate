@@ -1,8 +1,9 @@
 import express from 'express'
 import { body } from 'express-validator'
-import { adminProperty, createProperty, saveProperty, addImage, storeImage, editProperty, saveChangesProperty, deleteProperty, showProperty } from '../controllers/propertyController.js'
+import { adminProperty, createProperty, saveProperty, addImage, storeImage, editProperty, saveChangesProperty, deleteProperty, changeState,  showProperty, sendMessage, showMessage} from '../controllers/propertyController.js'
 import protectRoute from '../middlewares/protectRoute.js';
 import upload from '../middlewares/uploadFile.js';
+import identifyUser from '../middlewares/identifyUser.js'
 
 const router = express.Router();
 
@@ -56,9 +57,27 @@ router.post('/properties/delete/:id',
     deleteProperty
 )
 
+router.put('/properties/:id',
+    protectRoute,
+    changeState
+)
+
 //public area
 router.get('/property/:id',
+    identifyUser,
     showProperty
+)
+
+//message storage
+router.post('/property/:id',
+    identifyUser,
+    body('message').isLength({min:20}).withMessage('The query cannot be empty or too short'),
+    sendMessage
+)
+
+router.get('/messages/:id',
+    protectRoute,
+    showMessage
 )
 
 export default router

@@ -1,8 +1,28 @@
-header.bg-gray-300.p-4
+header.bg-red-700.p-4
     .container.mx-auto.flex.justify-between.items-center
-        h1.text-2xl.text-gray-600.font-extrabold.text-center REAL
-            span.font-normal ESTATE
-        nav(class='my-5 text-sm md:flex md:items-center md:gap-3 font-bold text-gray-600 hidden')
-            a(href='') My properties
+        a(href="/")
+            h1.text-2xl.text-gray-100.font-extrabold.text-center REAL
+                span.font-normal ESTATE
+
+        //- burguer nav
+        button(class="block md:hidden text-white" id="btnMenu")
+            svg(width="24" height="24", fill="none", viewBox="0 0 24 24", stroke="currentColor", stroke-width="2", stroke-linecap="round", stroke-linejoin="round")  
+                path(d="M4 6h16M4 12h16m-7 6h7", class="w-6 h-6") 
+        
+        nav(class='my-5 text-sm md:flex md:items-center md:gap-3 font-bold text-red-100 hidden')
+            a(href='/my-properties') My properties
             a(href='') My profile
-            a(class='bg-gray-600 text-gray-300 py-2 px-5 rounded-lg' href='') Sign out        
+
+            form(action="/auth/sign-out" method="POST")
+                input(type="hidden" name='_csrf' value=csrfToken)
+                input(type="submit" class='bg-red-800 text-gray-50 py-2 px-5 rounded-lg' value='Sign out')  
+
+        nav(class="hidden md:hidden mt-5 p-5 flex-col gap-4 border-t-2 items-center font-bold text-white" id="menuItems")
+            a(href="/my-properties") My properties
+ 
+            form(action="/auth/sign-out", method="post")
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="submit" class="bg-red-800 py-2 px-10 rounded-lg hover:bg-red-900" value="Sign Out")   
+
+block scripts 
+    script(src="/js/menu.js")    

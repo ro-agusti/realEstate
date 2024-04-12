@@ -74,6 +74,11 @@ const authenticate = async(req,res) => {
 
 }
 
+const signOut = (req,res) => {
+  return res.clearCookie('_token').status(200).redirect('/auth/login')
+  //res.send('cerrando sesion')
+}
+
 const formSignup = (req,res) => {
     console.log(req.csrfToken())
     res.render('auth/signup',{
@@ -279,6 +284,7 @@ const newPassword = async(req, res) => {
 export {
     formLogin,
     authenticate,
+    signOut,
     formSignup,
     register,
     confirm,

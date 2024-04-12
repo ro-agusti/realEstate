@@ -1,15 +1,14 @@
 import { unlink } from "node:fs/promises"
 import { validationResult } from "express-validator"
-import { Price, Category, Property } from "../models/index.js"
-//import Price from "../models/Price.js"
-//import Category from "../models/Category.js"
+import { Price, Category, Property, Message, User } from "../models/index.js"
+import { isSeller, formatDate } from "../helpers/index.js"
 
 const adminProperty = async(req,res) => {
 
     //read queryString
     const { page: actualPage } = req.query
     //console.log(actualPage)
-    const regularExpression = /^[0-9]$/
+    const regularExpression = /^[1-9]$/
 
     if (!regularExpression.test(actualPage)) {
         return res.redirect('my-properties?page=1')
@@ -34,7 +33,8 @@ const adminProperty = async(req,res) => {
                 },
                 include: [
                     { model: Category, as:'category' },
-                    { model: Price, as:'price' }
+                    { model: Price, as:'price' },
+                    { model: Message, as:'messages' }
                 ]
             }),
             Property.count({
@@ -50,7 +50,7 @@ const adminProperty = async(req,res) => {
             properties,
             csrfToken: req.csrfToken(),
             pages: Math.ceil(total / limit),
-            actualPage,
+            actualPage: Number(actualPage),
             total,
             offset,
             limit
@@ -315,11 +315,62 @@ const deleteProperty = async (req,res) => {
 
 }
 
+// modify property status - publish property
+const changeState = async (req,res) => {
+
+    const { id } = req.params
+
+    //validate property exist
+    const property = await Property.findByPk(id)
+    if (!property) {
+        return res.redirect('/my-properties')
+    }
+
+    //validate that the visitor to the URL is the one who created the property
+    if (property.userID.toString() !== req.user.id.toString()) {
+        return res.redirect('/my-properties')
+    }
+
+    //update db
+    property.published = !property.published
+    await property.save()
+    res.json ({
+        result: 'ok'
+    })
+
+}
+
 //show property
 const showProperty = async (req,res) => {
 
     const {id} = req.params
-    
+
+    //validate property exist
+    const property = await Property.findByPk(id, {
+        include: [
+            { model: Category, as:'category' },
+            { model: Price, as:'price' }
+        ]
+    })
+
+    if ( !property || !property.published ) {
+        return res.redirect('/404')
+    }
+
+    res.render('properties/show', {
+        property,
+        page: property.title,
+        csrfToken: req.csrfToken(),
+        user: req.user,
+        isSeller: isSeller(req.user?.id, property.userID)
+    })
+
+}
+
+const sendMessage = async (req,res) => {
+
+    const {id} = req.params
+
     //validate property exist
     const property = await Property.findByPk(id, {
         include: [
@@ -332,12 +383,74 @@ const showProperty = async (req,res) => {
         return res.redirect('/404')
     }
 
+    //show errors
+    //validation
+    let result = validationResult(req)
+    if(!result.isEmpty()) {
+        return res.render('properties/show', {
+            property,
+            page: property.title,
+            csrfToken: req.csrfToken(),
+            user: req.user,
+            isSeller: isSeller(req.user?.id, property.userID),
+            errors: result.array()
+        })
+    }
+
+    const { message } = req.body
+    const { id: propertyID } = req.params
+    const { id: userID } = req.user
+
+    // save message
+    await Message.create({
+        message,
+        propertyID,
+        userID
+    })
+
+    //res.redirect('/')
+    
     res.render('properties/show', {
         property,
         page: property.title,
-
+        csrfToken: req.csrfToken(),
+        user: req.user,
+        isSeller: isSeller(req.user?.id, property.userID),
+        sent: true
     })
 
+}
+
+
+// read sent message
+const showMessage = async (req, res) => {
+
+    const { id } = req.params
+
+    //validate property exist
+    const property = await Property.findByPk(id, {
+        include: [
+            { model: Message, as:'messages',
+                include: [
+                    {model: User.scope('deletePassword'), as: 'user'}
+                ]
+            }
+        ],
+    })
+    if (!property) {
+        return res.redirect('/my-properties')
+    }
+
+    //validate that the visitor to the URL is the one who created the property
+    if (property.userID.toString() !== req.user.id.toString()) {
+        return res.redirect('/my-properties')
+    }
+
+    res.render('properties/messages',{
+        page: 'Messages',
+        messages: property.messages,
+        formatDate
+    })
 }
 
 export {
@@ -349,5 +462,8 @@ export {
     editProperty,
     saveChangesProperty,
     deleteProperty,
-    showProperty
+    changeState,
+    showProperty,
+    sendMessage,
+    showMessage
 }
